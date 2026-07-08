@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting...</title>
+
+    <meta property="og:type" content="website" />
+    <!-- <meta
+      property="og:url"
+      content="https://minhduhung2002.github.io/test-store-redirect/"
+    /> -->
+    <meta
+      property="og:title"
+      content="You’ve been invited to join Tailgate!"
+    />
+    <meta
+      property="og:description"
+      content="Download our app to connect and share anonymously with others"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const CONFIG = {
+        // Android
+        androidPackage: "com.tailgate.xyz",
+        androidScheme: "tailgate://",
+        playStoreUrl:
+          "https://play.google.com/store/apps/details?id=com.tailgate.xyz",
+
+        // iOS
+        iosScheme: "tailgate://",
+        appStoreUrl: "https://apps.apple.com/app/tailgate-call-the-shots/id6757574302",
+
+        // Web fallback
+        webUrl: "https://base.trytailgate.com/",
+
+        // Short delay to detect if app opened
+        redirectDelay: 500,
+      };
+
+      // Get path from URL (for deep linking)
+      const urlParams = new URLSearchParams(window.location.search);
+      const path = urlParams.get("path") || "";
+
+      // ===== DETECTION =====
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const isAndroid = /android/i.test(userAgent);
+      const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+      const isMobile = isAndroid || isIOS;
+
+      // ===== MAIN LOGIC =====
+      function redirectToApp() {
+        let appUrl, storeUrl;
+
+        if (isAndroid) {
+          const cleanPath = path.startsWith("/") ? path.substring(1) : path;
+          appUrl = CONFIG.androidScheme + cleanPath;
+          storeUrl = CONFIG.playStoreUrl;
+        } else if (isIOS) {
+          const cleanPath = path.startsWith("/") ? path.substring(1) : path;
+          appUrl = CONFIG.iosScheme + cleanPath;
+          storeUrl = CONFIG.appStoreUrl;
+        } else {
+          // Desktop - redirect to web
+          window.location.href = CONFIG.webUrl + path;
+          return;
+        }
+
+        // Mobile: Try to open app
+        let appOpened = false;
+
+        // Detect if app opened
+        const visibilityHandler = () => {
+          if (document.hidden) {
+            appOpened = true;
+          }
+        };
+
+        const blurHandler = () => {
+          appOpened = true;
+        };
+
+        document.addEventListener("visibilitychange", visibilityHandler);
+        window.addEventListener("blur", blurHandler);
+
+        // Try to open app
+        if (isIOS) {
+          // iOS: use iframe method
+          try {
+            const iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = appUrl;
+            document.body.appendChild(iframe);
+
+            setTimeout(() => {
+              try {
+                document.body.removeChild(iframe);
+              } catch (e) {}
+            }, 300);
+          } catch (e) {
+            console.log("iOS iframe failed:", e);
+          }
+        } else if (isAndroid) {
+          // Android: try iframe + direct navigation
+          try {
+            const iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = appUrl;
+            document.body.appendChild(iframe);
+
+            setTimeout(() => {
+              try {
+                document.body.removeChild(iframe);
+              } catch (e) {}
+            }, 100);
+          } catch (e) {}
+
+          setTimeout(() => {
+            if (!appOpened) {
+              try {
+                window.location.href = appUrl;
+              } catch (e) {}
+            }
+          }, 100);
+        }
+
+        // Redirect to store if app didn't open
+        setTimeout(() => {
+          document.removeEventListener("visibilitychange", visibilityHandler);
+          window.removeEventListener("blur", blurHandler);
+
+          if (!document.hidden && !appOpened) {
+            // Redirect to store immediately
+            window.location.href = storeUrl;
+          }
+        }, CONFIG.redirectDelay);
+      }
+
+      // Start immediately
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", redirectToApp);
+      } else {
+        redirectToApp();
+      }
+
+      // Handle back button
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) {
+          const storeUrl = isAndroid ? CONFIG.playStoreUrl : CONFIG.appStoreUrl;
+          window.location.href = storeUrl;
+        }
+      });
+    </script>
+  </body>
+</html>
