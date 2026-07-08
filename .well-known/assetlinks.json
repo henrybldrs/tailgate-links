@@ -1,0 +1,13 @@
+[
+  {
+      relation: ["delegate_permission/common.handle_all_urls"],
+      target: {
+        namespace: "android_app",
+        package_name: "com.tailgate.xyz",
+        sha256_cert_fingerprints: [
+          "84:4C:A6:7D:0C:B4:75:F1:12:65:48:36:0D:F9:B8:CD:72:EB:A0:AB:DB:12:A9:A6:6B:74:6F:3B:22:E1:FC:D5",
+          "01:5D:08:BB:91:53:93:ED:A8:10:3B:31:C2:99:DF:3A:41:EA:46:67:7B:F6:4B:E4:6D:D3:C6:8C:F9:FB:8A:DD",
+        ],
+      },
+    },
+]
