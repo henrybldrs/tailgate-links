@@ -1,6 +1,5 @@
-export async function GET() {
-  const aasa = {
-    applinks: {
+{
+  applinks: {
       apps: [],
       details: [
         {
@@ -16,11 +15,4 @@ export async function GET() {
       apps: ["29JG3KM27R.com.tailgate.xyz"],
     },
   };
-
-  return Response.json(aasa, {
-    headers: {
-      "Content-Type": "application/json",
-      "Content-Disposition": "inline",
-    },
-  });
 }
