@@ -1,18 +1,17 @@
 {
-  applinks: {
-      apps: [],
-      details: [
-        {
-          appID: "29JG3KM27R.com.tailgate.xyz",
-          paths: ["/*"],
-        },
-      ],
-    },
-    activitycontinuation: {
-      apps: ["29JG3KM27R.com.tailgate.xyz"],
-    },
-    webcredentials: {
-      apps: ["29JG3KM27R.com.tailgate.xyz"],
-    },
-  };
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "29JG3KM27R.com.tailgate.xyz",
+        "paths": ["/*"]
+      }
+    ]
+  },
+  "activitycontinuation": {
+    "apps": ["29JG3KM27R.com.tailgate.xyz"]
+  },
+  "webcredentials": {
+    "apps": ["29JG3KM27R.com.tailgate.xyz"]
+  }
 }
